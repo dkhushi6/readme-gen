@@ -11,22 +11,16 @@ const Page = () => {
   const router = useRouter();
   const [username, setUsername] = useState("");
 
-  // Handle typing
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value.trim());
+    setUsername(e.target.value);
   };
 
-  // Handle button click
-  const handleSearch = async () => {
-    if (!username) return;
-    try {
-      const res = await axios.post("/api/public/all-repo", { username });
-      if (res.data) {
-        // router.push(`/repos/${username}`);
-        console.log("data", res.data);
+  const handleSearch = () => {
+    if (username) {
+      const trimmed = username.trim();
+      if (trimmed) {
+        router.push(`/repos/${trimmed}`);
       }
-    } catch (err) {
-      console.error("Error fetching repos:", err);
     }
   };
 
