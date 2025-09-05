@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
   const repos = await axios.get(
     `https://api.github.com/users/${username}/repos`
   );
-  console.log(repos);
   //fetch data from the response
   return NextResponse.json({ success: true, repos: repos.data });
 }

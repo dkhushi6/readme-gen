@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button, buttonVariants } from "./button";
 import logo from "@/public/app-logog.png";
+import ThemeSwitcher from "../theme/theme-switcher";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -79,6 +80,7 @@ const Navbar = () => {
               Login
             </Link>
           )}
+          <ThemeSwitcher />
         </div>
       </div>
     </header>

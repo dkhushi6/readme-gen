@@ -1,79 +1,53 @@
 import { Repo } from "./repo";
 
 export const promptReadme = (repo: Repo) => `
-You are an expert technical writer and open-source maintainer. 
-Your task is to generate a **complete README.md** file in Markdown format 
-for the following GitHub repository using the provided metadata. 
-
-Do not invent random facts, but if a field is missing, use general best practices.
+You are an expert technical writer. Generate a **concise README.md** in Markdown for the following GitHub repository. 
+Use the provided metadata and best practices. Do not invent facts.
 
 ---
 
 ## Repository Metadata
 - Name: ${repo.name}
-- Full Name: ${repo.full_name}
 - Description: ${repo.description || "No description provided"}
 - Owner: ${repo.owner?.login} (${repo.owner?.html_url})
-- Primary Language: ${repo.language || "Not specified"}
-- Topics: ${
-  repo.topics && repo.topics.length > 0 ? repo.topics.join(", ") : "None"
+- Language: ${repo.language || "Not specified"}
+- Stars/Forks/Issues: ${repo.stargazers_count}/${repo.forks_count}/${
+  repo.open_issues_count
 }
-- Stars: ${repo.stargazers_count}
-- Forks: ${repo.forks_count}
-- Issues: ${repo.open_issues_count}
 - License: ${repo.license?.name || "MIT"}
 - Homepage: ${repo.homepage || "Not provided"}
-- Created: ${repo.created_at}
-- Last Updated: ${repo.updated_at}
-- Clone URL: ${repo.clone_url}
-- SSH URL: ${repo.ssh_url}
 - GitHub URL: ${repo.html_url}
 
 ---
 
-## README Schema
+## README
+
 # ${repo.name}
 
-[Badges: stars, forks, license, language, last update]
+## Overview
+Briefly explain what the project does and why it matters.
 
-## 🚀 Overview
-Explain what this project is, who it’s for, and why it matters.
+## Features
+List key features.
 
-## ✨ Features
-List of core features. Highlight repo topics if available.
+## Installation
+Clone the repo and install dependencies:
+\`\`\`bash
+git clone ${repo.clone_url}
+# or via SSH
+git clone ${repo.ssh_url}
+\`\`\`
 
-## 📦 Installation
-- Include both HTTPS and SSH clone options.
-- Show dependency installation commands.
+## Usage
+Provide minimal code example or usage instructions.
 
-## 🛠️ Usage
-- Provide code snippets for running/using the project.
-- If homepage/demo exists, link to it.
+## Contributing
+Steps to fork, branch, commit, and PR. See issues: ${repo.html_url}/issues
 
-## 📚 Documentation
-- Add setup/configuration details.
-- Reference external docs if homepage exists.
+## License
+${repo.license?.name || "MIT"}
 
-## 🤝 Contributing
-- Steps to fork, branch, commit, and PR.
-- Mention issues link: ${repo.html_url}/issues
-
-## 🧪 Testing
-- Show how to run tests if common (e.g., npm test, pytest).
-
-## 📄 License
-- State license clearly: ${repo.license?.name || "MIT"}
-
-## 📊 Repo Insights
-- Stars: ${repo.stargazers_count}
-- Forks: ${repo.forks_count}
-- Open Issues: ${repo.open_issues_count}
-- Created: ${repo.created_at}
-- Last Updated: ${repo.updated_at}
-
-## 🌐 Links
-- GitHub Repo: ${repo.html_url}
+## Links
+- GitHub: ${repo.html_url}
 - Homepage: ${repo.homepage || "Not provided"}
-- Issues: ${repo.html_url}/issues
-- Pull Requests: ${repo.html_url}/pulls
 `;

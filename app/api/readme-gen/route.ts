@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
     console.log(textPart);
     fullText += textPart;
   }
+  console.log("readme", fullText);
 
   // Return the complete generated README
   return NextResponse.json({
