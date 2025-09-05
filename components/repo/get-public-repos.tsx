@@ -17,12 +17,14 @@ const GithubPublicRepos = ({ username }: { username?: string }) => {
   useEffect(() => {
     const fetchRepos = async () => {
       try {
-        if (session && session.user?.accessToken && !username) {
+        if (session?.user?.accessToken && session.user.username === username) {
           const res = await axios.get("/api/private/all-repo", {
             headers: {
               Authorization: `Bearer ${session.user.accessToken}`,
             },
           });
+          console.log("res from username", res.data);
+
           setRepos(res.data.repos);
         } else if (username) {
           const res = await axios.post("/api/public/all-repo", { username });

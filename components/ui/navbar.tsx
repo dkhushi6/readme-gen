@@ -39,7 +39,7 @@ const Navbar = () => {
           {session ? (
             <div className="flex items-center gap-4">
               <Link
-                href="/user-repo"
+                href={`/repos/${session.user.username}`}
                 className={buttonVariants({ variant: "outline" })}
               >
                 {" "}

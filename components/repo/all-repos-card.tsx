@@ -25,11 +25,7 @@ const AllReposCard = ({ repo, username }: AllReposCardProps) => {
   return (
     <Card
       onClick={() => {
-        if (username) {
-          router.push(`/repos/${username}/${repo.name}`);
-        } else {
-          router.push(`/repos/user/${repo.name}`);
-        }
+        router.push(`/repos/${username}/${repo.name}`);
       }}
       key={repo.id}
       className="p-4 rounded-lg shadow hover:shadow-lg transition flex flex-col justify-between h-60 bg-gradient-to-t from-gray-50 dark:from-neutral-800 to-white dark:to-neutral-900"

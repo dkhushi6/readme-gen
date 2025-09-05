@@ -11,15 +11,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, account }) {
-      // store access token in JWT
       if (account) {
         token.accessToken = account.access_token;
+
+        // fetch GitHub username
+        const res = await fetch("https://api.github.com/user", {
+          headers: {
+            Authorization: `token ${account.access_token}`,
+          },
+        });
+        const profile = await res.json();
+        token.username = profile.login;
       }
       return token;
     },
     async session({ session, token }) {
-      // expose token to the client session
-      session.user.accessToken = token.accessToken as string;
+      session.user.accessToken = token.accessToken as string; // TS now knows it exists
+      session.user.username = token.username as string;
       return session;
     },
   },

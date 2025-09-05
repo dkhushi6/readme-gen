@@ -10,6 +10,12 @@ export async function GET() {
   }
 
   try {
+    const user = await axios.get("https://api.github.com/user", {
+      headers: {
+        Authorization: `token ${session.user.accessToken}`,
+      },
+    });
+    const username = user.data.login;
     const repos = await axios.get("https://api.github.com/user/repos", {
       headers: {
         Authorization: `token ${session.user.accessToken}`,
@@ -17,7 +23,7 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ success: true, repos: repos.data });
+    return NextResponse.json({ success: true, repos: repos.data, username });
   } catch (e: any) {
     console.error("GitHub API error:", e.response?.status, e.response?.data);
     return NextResponse.json(
@@ -28,24 +34,26 @@ export async function GET() {
 }
 export async function POST(req: NextRequest) {
   const session = await auth();
-  const { repoName } = await req.json();
+  const { repoName, username } = await req.json();
   if (!repoName) {
     return NextResponse.json({ error: "repo name not found" });
   }
+  if (!username) {
+    return NextResponse.json({ error: "repo name not found" });
+  }
+
+  console.log("repoName before session", repoName);
+
   if (!session?.user?.accessToken) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
-  //get the username first to see a specific repo
-  const user = await axios.get("https://api.github.com/user", {
-    headers: {
-      Authorization: `token ${session.user.accessToken}`,
-    },
-  });
-  const username = user.data.login;
+  console.log("repoName after session", repoName);
+
   console.log("username", username);
+
   try {
     const repos = await axios.get(
-      `https://api.github.com/${username}/${repoName}`,
+      `https://api.github.com/repos/${username}/${repoName}`,
       {
         headers: {
           Authorization: `token ${session.user.accessToken}`,
@@ -58,8 +66,8 @@ export async function POST(req: NextRequest) {
   } catch (e: any) {
     console.error("GitHub API error:", e.response?.status, e.response?.data);
     return NextResponse.json(
-      { error: "GitHub API error", details: e.response?.data || e.message },
-      { status: e.response?.status || 500 }
+      { error: "GitHub API error", details: e.response?.data || e.message }
+      // { status: e.response?.status || 500 }
     );
   }
 }
