@@ -34,44 +34,51 @@ const Navbar = () => {
         </Link>
 
         <div className="flex items-center gap-4">
+          <ThemeSwitcher />
+
           {session ? (
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <button className="flex items-center gap-2 cursor-pointer">
-                  <span className="hidden sm:inline text-[15px] text-bold">
-                    {session.user?.name}
-                  </span>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/user-repo"
+                className={buttonVariants({ variant: "outline" })}
+              >
+                {" "}
+                User Repo
+              </Link>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <button className="flex items-center gap-2 cursor-pointer">
+                    <Image
+                      alt="user-image"
+                      src={session.user?.image || "/default.jpg"}
+                      width={32}
+                      height={32}
+                      className="rounded-full border"
+                    />
+                  </button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-48 p-4 flex flex-col items-center gap-3 text-center">
                   <Image
                     alt="user-image"
                     src={session.user?.image || "/default.jpg"}
-                    width={32}
-                    height={32}
+                    width={48}
+                    height={48}
                     className="rounded-full border"
                   />
-                </button>
-              </HoverCardTrigger>
-
-              <HoverCardContent className="w-48 p-4 flex flex-col items-center gap-3 text-center">
-                <Image
-                  alt="user-image"
-                  src={session.user?.image || "/default.jpg"}
-                  width={48}
-                  height={48}
-                  className="rounded-full border"
-                />
-                <p className="text-sm font-semibold">{session.user?.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  {session.user?.email}
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => signOut()}
-                >
-                  Log Out
-                </Button>
-              </HoverCardContent>
-            </HoverCard>
+                  <p className="text-sm font-semibold">{session.user?.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {session.user?.email}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => signOut()}
+                  >
+                    Log Out
+                  </Button>
+                </HoverCardContent>
+              </HoverCard>
+            </div>
           ) : (
             <Link
               href="/login"
@@ -80,7 +87,6 @@ const Navbar = () => {
               Login
             </Link>
           )}
-          <ThemeSwitcher />
         </div>
       </div>
     </header>
