@@ -25,7 +25,7 @@ const Page = () => {
   };
 
   return (
-    <div className="text-5xl flex justify-center items-center h-screen">
+    <div className="text-5xl flex justify-center items-center h-screen ">
       <div className="flex gap-2">
         <Input
           type="text"

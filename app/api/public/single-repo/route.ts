@@ -1,5 +1,8 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import { google } from "@ai-sdk/google";
+import { streamText } from "ai";
+import { promptReadme } from "@/lib/readme-prompt";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -14,7 +17,6 @@ export async function POST(req: NextRequest) {
     `https://api.github.com/repos/${username}/${repoName}`
   );
 
-  console.log(repo);
   //fetch data from the response
   return NextResponse.json({ success: true, repos: repo.data });
 }
