@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <SessionWrapper>
           <Navbar />
-          <main>{children}</main>
+          <main className="mt-18">{children}</main>
         </SessionWrapper>
       </body>
     </html>

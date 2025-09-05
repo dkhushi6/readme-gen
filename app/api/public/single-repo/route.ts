@@ -11,8 +11,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "repoName not found" });
   }
   const repo = await axios.get(
-    `https://api.github.com/users/${username}/${repoName}`
+    `https://api.github.com/repos/${username}/${repoName}`
   );
+
   console.log(repo);
   //fetch data from the response
   return NextResponse.json({ success: true, repos: repo.data });
