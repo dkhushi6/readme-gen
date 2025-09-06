@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../ui/button";
+import { buttonVariants } from "../ui/button";
 import {
   AlertCircle,
   Circle,
@@ -12,6 +12,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Card } from "../ui/card";
 import { Repo } from "@/lib/repo";
 import { languageColors } from "@/lib/language-color";
+import Link from "next/link";
 
 const SpecificRepoCard = ({ repo }: { repo: Repo }) => {
   const langColor =
@@ -20,14 +21,14 @@ const SpecificRepoCard = ({ repo }: { repo: Repo }) => {
     <Card className="p-6 bg-gradient-to-t from-gray-50 dark:from-neutral-800 to-white dark:to-neutral-900 rounded-lg shadow-md">
       <div className="flex justify-between items-start mb-4">
         <h1 className="text-2xl font-bold">{repo.name}</h1>
-        <a
+        <Link
           href={repo.html_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"
+          className={buttonVariants({ variant: "outline" })}
         >
           <LucideLink className="w-5 h-5" />
-        </a>
+        </Link>
       </div>
       {repo.description && (
         <p className="text-gray-700 dark:text-gray-300 mb-4">

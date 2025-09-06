@@ -24,17 +24,23 @@ export async function POST(req: NextRequest) {
     );
 
     return NextResponse.json({ success: true, repo: repo.data });
-  } catch (err: any) {
-    console.error(
-      "GitHub API error:",
-      err.response?.status,
-      err.response?.data || err.message
-    );
-    return NextResponse.json(
-      {
-        error: "GitHub API error",
-      },
-      { status: 500 }
-    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(
+        "GitHub API error:",
+        error.response?.status,
+        error.response?.data || error.message
+      );
+      return NextResponse.json(
+        {
+          error: "GitHub API error",
+          details: error.response?.data || error.message,
+        },
+        { status: error.response?.status || 500 }
+      );
+    }
+
+    console.error("Unexpected error:", error);
+    return NextResponse.json({ error: "Unexpected error" }, { status: 500 });
   }
 }

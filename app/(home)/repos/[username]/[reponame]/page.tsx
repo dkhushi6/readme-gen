@@ -48,11 +48,8 @@ const RepoPage = () => {
           });
           setRepo(res.data.repo);
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error(err);
-        setError(
-          err.response?.data?.error || "Failed to fetch repository information"
-        );
       } finally {
         setLoading(false);
       }

@@ -33,8 +33,8 @@ const GithubPublicRepos = ({ username }: { username?: string }) => {
         } else {
           setError("Username is required to fetch public repos");
         }
-      } catch (err: any) {
-        setError(err.response?.status === 404 ? "User not found" : err.message);
+      } catch (err) {
+        console.error("User not found", err);
       } finally {
         setLoading(false);
       }
@@ -50,7 +50,7 @@ const GithubPublicRepos = ({ username }: { username?: string }) => {
   return (
     <div className="px-6 py-8">
       <h2 className="text-2xl font-bold mb-6">
-        {username}'s Public Repositories
+        {username}&apos;s Public Repositories
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {repos.map((repo) => (

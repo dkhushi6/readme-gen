@@ -14,30 +14,35 @@ import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Repo } from "@/lib/repo";
 import { languageColors } from "@/lib/language-color";
+
 type AllReposCardProps = {
   repo: Repo;
   username?: string;
 };
+
 const AllReposCard = ({ repo, username }: AllReposCardProps) => {
   const router = useRouter();
   const langColor =
     languageColors[repo.language || "default"] || languageColors.default;
+
   return (
     <Card
       onClick={() => {
         router.push(`/repos/${username}/${repo.name}`);
       }}
       key={repo.id}
-      className="p-4 rounded-lg shadow hover:shadow-lg transition flex flex-col justify-between h-60 bg-gradient-to-t from-gray-50 dark:from-neutral-800 to-white dark:to-neutral-900"
+      className="p-4 rounded-lg shadow hover:shadow-lg transition flex flex-col justify-between h-60 bg-card cursor-pointer"
     >
       {/* Repo Name + Link */}
       <div className="flex justify-between items-start mb-2">
-        <h3 className="font-semibold text-lg truncate">{repo.name}</h3>
+        <h3 className="font-semibold text-lg truncate text-foreground">
+          {repo.name}
+        </h3>
         <Link
           href={repo.html_url}
           target="_blank"
           rel="noopener noreferrer"
-          className={buttonVariants({ variant: "outline" })}
+          className={buttonVariants({ variant: "outline", size: "icon" })}
         >
           <LucideLink className="w-4 h-4" />
         </Link>
@@ -45,13 +50,13 @@ const AllReposCard = ({ repo, username }: AllReposCardProps) => {
 
       {/* Description */}
       {repo.description && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-3">
+        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
           {repo.description}
         </p>
       )}
 
       {/* Repo Stats */}
-      <div className="flex flex-col gap-2 mt-auto text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex flex-col gap-2 mt-auto text-xs text-muted-foreground">
         <div className="flex items-center gap-3 flex-wrap">
           {repo.language && (
             <div className="flex items-center gap-1">
@@ -76,7 +81,7 @@ const AllReposCard = ({ repo, username }: AllReposCardProps) => {
             <span>{repo.open_issues_count}</span>
           </div>
         </div>
-        <div className="text-gray-400">
+        <div className="text-muted-foreground">
           Updated {formatDistanceToNow(new Date(repo.updated_at))} ago
         </div>
       </div>

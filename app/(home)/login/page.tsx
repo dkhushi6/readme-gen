@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import React, { useEffect } from "react";
+import React from "react";
 import gg from "@/public/git.png";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
