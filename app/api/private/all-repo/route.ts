@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
