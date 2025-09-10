@@ -1,9 +1,8 @@
 import { Repo } from "./repo";
 
 export const promptReadme = (repo: Repo) => `
-You are an expert technical writer. Generate a **concise README.md** in Markdown for the following GitHub repository. 
-Use the provided metadata and best practices. Do not invent facts.
-
+You are an expert technical writer. Generate a **concise README.md** in valid Markdown format for the following GitHub repository. 
+⚠️ Output must be in Markdown only — no explanations, no extra text outside the README.
 ---
 
 ## Repository Metadata
