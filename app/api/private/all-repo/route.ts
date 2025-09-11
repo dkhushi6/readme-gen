@@ -68,3 +68,61 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user?.accessToken) {
+    return NextResponse.json({ error: "login first" });
+  }
+
+  const { repoName, username, readme, branch = "main" } = await req.json();
+  if (!repoName) {
+    return NextResponse.json({ error: "repo name not found" });
+  }
+  if (!username) {
+    return NextResponse.json({ error: "username not found" });
+  }
+
+  if (!readme) {
+    return NextResponse.json({ error: "readme content not found" });
+  }
+
+  const encodedReadme = Buffer.from(readme).toString("base64");
+  let existingReadme: string | undefined;
+  try {
+    const res = await axios.get(
+      `https://api.github.com/repos/${username}/${repoName}/contents/README.md?ref=${branch}`,
+      { headers: { Authorization: `token ${session.user.accessToken}` } }
+    );
+    console.log(res.data);
+    existingReadme = res.data.sha;
+  } catch {
+    return NextResponse.json(
+      { error: "Error in fetching existing readme" },
+      { status: 500 }
+    );
+  }
+  try {
+    const publish = await axios.put(
+      `https://api.github.com/repos/${username}/${repoName}/contents/README.md`,
+      {
+        message: "docs: update README with latest changes",
+        content: encodedReadme,
+        branch,
+        sha: existingReadme,
+      },
+      {
+        headers: {
+          Authorization: `token ${session.user.accessToken}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
+    return NextResponse.json({ success: true, commit: publish.data });
+  } catch {
+    return NextResponse.json(
+      { error: "Error in publishing README" },
+      { status: 500 }
+    );
+  }
+}

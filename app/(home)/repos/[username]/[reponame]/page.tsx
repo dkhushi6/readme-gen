@@ -64,7 +64,7 @@ const RepoPage = () => {
 
   return (
     <div className="px-6 py-8 max-w-4xl mx-auto space-y-6">
-      <GetSpecificRepo repo={repo} />
+      <GetSpecificRepo repo={repo} username={username} />
     </div>
   );
 };

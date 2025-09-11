@@ -10,9 +10,10 @@ import { GenerateButton } from "../generate-button";
 
 type SpecificRepoCardProps = {
   repo: Repo;
+  username: string;
 };
 
-const GetSpecificRepo = ({ repo }: SpecificRepoCardProps) => {
+const GetSpecificRepo = ({ repo, username }: SpecificRepoCardProps) => {
   const [readme, setReadme] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +35,7 @@ const GetSpecificRepo = ({ repo }: SpecificRepoCardProps) => {
     <div className="space-y-4">
       <SpecificRepoCard repo={repo} />
       {readme ? (
-        <ReadmeCard readme={readme} />
+        <ReadmeCard readme={readme} username={username} repoName={repo.name} />
       ) : (
         <div className="flex justify-center items-center">
           <GenerateButton
