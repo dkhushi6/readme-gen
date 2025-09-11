@@ -10,12 +10,15 @@ export async function GET() {
   }
 
   try {
-    const repos = await axios.get("https://api.github.com/user/repos", {
-      headers: {
-        Authorization: `token ${session.user.accessToken}`,
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
+    const repos = await axios.get(
+      "https://api.github.com/user/repos?per_page=100&page=1&sort=update",
+      {
+        headers: {
+          Authorization: `token ${session.user.accessToken}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
 
     return NextResponse.json({ success: true, repos: repos.data });
   } catch {

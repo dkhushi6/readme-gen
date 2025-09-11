@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "username not found" });
   }
   const repos = await axios.get(
-    `https://api.github.com/users/${username}/repos`
+    `https://api.github.com/users/${username}/repos?per_page=100&page=1&sort=update`
   );
   //fetch data from the response
   return NextResponse.json({ success: true, repos: repos.data });

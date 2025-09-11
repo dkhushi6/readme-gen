@@ -27,4 +27,5 @@ export type Repo = {
     html_url: string;
     avatar_url: string;
   };
+  private: boolean;
 };
