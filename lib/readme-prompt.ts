@@ -1,52 +1,123 @@
 import { Repo } from "./repo";
+import { PackageJson } from "./package-json";
+import { categorizeDependencies } from "./categeory-dependency";
 
-export const promptReadme = (repo: Repo) => `
-You are an expert technical writer. Generate a **concise README.md** in valid Markdown format for the following GitHub repository. 
-⚠️ Output must be in Markdown only — no explanations, no extra text outside the README.
----
+export const promptReadme = (repo: Repo, packageJson?: PackageJson | null) => {
+  const categorized =
+    packageJson?.dependencies || packageJson?.devDependencies
+      ? categorizeDependencies({
+          ...packageJson?.dependencies,
+          ...packageJson?.devDependencies,
+        })
+      : {};
 
-## Repository Metadata
-- Name: ${repo.name}
-- Description: ${repo.description || "No description provided"}
-- Owner: ${repo.owner?.login} (${repo.owner?.html_url})
-- Language: ${repo.language || "Not specified"}
-- Stars/Forks/Issues: ${repo.stargazers_count}/${repo.forks_count}/${
-  repo.open_issues_count
+  const techOverview = Object.entries(categorized)
+    .filter(([category, deps]) => Object.keys(deps).length > 0)
+    .map(
+      ([category, deps]) =>
+        `- **${category}:** ${Object.keys(deps)
+          .map((d) => `\`${d}\``)
+          .join(", ")}`
+    )
+    .join("\n");
+
+  return `
+  You are a README generator. 
+Strictly respond in **Markdown format** only. 
+Do not include explanations or extra text outside of the README.
+
+# 🚀 **${repo.name}**
+
+${
+  packageJson?.keywords?.length
+    ? packageJson.keywords
+        .map(
+          (kw) =>
+            `![Badge](https://img.shields.io/badge/${encodeURIComponent(
+              kw
+            )}-blue)`
+        )
+        .join(" ")
+    : ""
 }
-- License: ${repo.license?.name || "MIT"}
-- Homepage: ${repo.homepage || "Not provided"}
-- GitHub URL: ${repo.html_url}
 
 ---
 
-## README
+## 🎯 **Overview**
+**Description:** ${
+    repo.description ||
+    packageJson?.description ||
+    "An open-source project built with modern tooling to help developers get started quickly."
+  }
 
-# ${repo.name}
+---
 
-## Overview
-Briefly explain what the project does and why it matters.
-
-## Features
+## ✨ **Features**
 List key features.
 
-## Installation
-Clone the repo and install dependencies:
+---
+
+## ⚡ **Installation**
+Clone the repository and install dependencies:
+
 \`\`\`bash
 git clone ${repo.clone_url}
-# or via SSH
-git clone ${repo.ssh_url}
+cd ${repo.name}
+npm install
 \`\`\`
 
-## Usage
-Provide minimal code example or usage instructions.
+${
+  packageJson?.scripts
+    ? `### 🛠️ **Available Scripts**
+\`\`\`bash
+${Object.entries(packageJson.scripts)
+  .map(([script, cmd]) => `npm run ${script}   # ${cmd}`)
+  .join("\n")}
+\`\`\``
+    : ""
+}
 
-## Contributing
-Steps to fork, branch, commit, and PR. See issues: ${repo.html_url}/issues
+---
 
-## License
-${repo.license?.name || "MIT"}
+## 🔥 **Tech Stack**
+${techOverview || "This project uses modern JavaScript/TypeScript tooling."}
 
-## Links
-- GitHub: ${repo.html_url}
-- Homepage: ${repo.homepage || "Not provided"}
+---
+
+## 🛠️ **Usage**
+Run the project:
+
+\`\`\`bash
+npm start
+\`\`\`
+
+Example usage in code:
+
+\`\`\`js
+// Example usage
+import something from "${repo.name}";
+\`\`\`
+
+---
+
+## 🤝 **Contributing**
+1. **Fork** the repo 🍴  
+2. **Create** a new branch 🌱  
+3. **Commit** your changes 💡  
+4. **Push** to the branch 🚀  
+5. **Open** a Pull Request 🎯  
+
+👉 See issues here: ${repo.html_url}/issues
+
+---
+
+## 📜 **License**
+**${repo.license?.name || packageJson?.license || "MIT"}**
+
+---
+
+## 🔗 **Links**
+- 🌐 **GitHub:** ${repo.html_url}
+- 🏠 **Homepage:** ${repo.homepage || "Not provided"}
 `;
+};

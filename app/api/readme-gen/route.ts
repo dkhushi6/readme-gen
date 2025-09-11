@@ -4,12 +4,11 @@ import { streamText } from "ai";
 import { promptReadme } from "@/lib/readme-prompt";
 
 export async function POST(req: NextRequest) {
-  const { repoData } = await req.json();
+  const { repoData, packageJson } = await req.json();
 
-  // Start streaming from the AI SDK
   const { textStream } = streamText({
     model: google("gemini-2.5-flash"),
-    prompt: promptReadme(repoData),
+    prompt: promptReadme(repoData, packageJson),
   });
 
   let fullText = "";
@@ -20,7 +19,6 @@ export async function POST(req: NextRequest) {
   }
   console.log("readme", fullText);
 
-  // Return the complete generated README
   return NextResponse.json({
     message: "README created successfully",
     readme: fullText,

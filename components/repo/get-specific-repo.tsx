@@ -7,20 +7,29 @@ import axios from "axios";
 import { ReadmeCard } from "./readme-card";
 import SpecificRepoCard from "./specific-repo-card";
 import { GenerateButton } from "../generate-button";
+import { PackageJson } from "@/lib/package-json";
 
 type SpecificRepoCardProps = {
   repo: Repo;
   username: string;
+  packageJson: PackageJson | null;
 };
 
-const GetSpecificRepo = ({ repo, username }: SpecificRepoCardProps) => {
+const GetSpecificRepo = ({
+  repo,
+  username,
+  packageJson,
+}: SpecificRepoCardProps) => {
   const [readme, setReadme] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleReadmeGen = async () => {
     setLoading(true);
     try {
-      const res = await axios.post("/api/readme-gen", { repoData: repo });
+      const res = await axios.post("/api/readme-gen", {
+        repoData: repo,
+        packageJson,
+      });
       if (res?.data?.readme) {
         setReadme(res.data.readme);
       }

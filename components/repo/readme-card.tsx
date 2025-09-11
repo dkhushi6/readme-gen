@@ -3,11 +3,12 @@
 import React, { useState } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { Copy, Eye, Code } from "lucide-react";
+import { Copy, Eye, Code, LucideLoaderCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 type ReadmeCardProps = {
   readme: string;
   username: string;
@@ -16,33 +17,37 @@ type ReadmeCardProps = {
 const ReadmeCard = ({ readme, username, repoName }: ReadmeCardProps) => {
   const { data: session } = useSession();
   const [isPreview, setIsPreview] = useState(true);
-  const [isPrivate, setIsPrivate] = useState(false);
+  const isOwner = session?.user?.username === username;
+  const [loading, setLoading] = useState(false);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(readme);
+      toast.success("README copied from the clipboard");
     } catch (err) {
       console.error("failed to copy", err);
     }
   };
   const handlePublishCode = async () => {
-    if (session?.user?.accessToken && session.user.username === username) {
-      setIsPrivate(true);
-    }
+    setLoading(true);
+    try {
+      await axios.put("/api/private/all-repo", {
+        repoName,
+        readme,
+        username,
+      });
+    } catch {
+      console.error("error publishing");
+    } finally {
+      toast.success("Your README has been successfully updated on GitHub");
 
-    const res = await axios.put("/api/private/all-repo", {
-      repoName,
-      readme,
-      username,
-    });
-    console.log(res.data);
+      setLoading(false);
+    }
   };
   return (
     <div className="flex flex-col gap-4">
       <Card className="relative p-4 max-h-[600px] overflow-auto">
-        {/* Actions */}
         <div className="absolute top-2 right-2 flex gap-2">
-          {/* Copy Button */}
           <Button
             variant="ghost"
             size="icon"
@@ -51,7 +56,6 @@ const ReadmeCard = ({ readme, username, repoName }: ReadmeCardProps) => {
           >
             <Copy className="h-4 w-4" />
           </Button>
-          {/* Toggle Button with text */}
           <Button
             variant="ghost"
             onClick={() => setIsPreview(!isPreview)}
@@ -80,12 +84,15 @@ const ReadmeCard = ({ readme, username, repoName }: ReadmeCardProps) => {
           </pre>
         )}
       </Card>
-      {isPrivate && (
+      {isOwner && (
         <Button
           onClick={() => handlePublishCode()}
           className="w-full rounded-xl"
         >
-          Publish
+          {loading && (
+            <LucideLoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          {loading ? "Publishing" : "Publish"}
         </Button>
       )}
     </div>

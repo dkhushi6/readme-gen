@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { username, repoName } = body;
+    const { username, repoName, branch = "main" } = body;
 
     if (!username) {
       return NextResponse.json(
@@ -18,29 +18,24 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
     const repo = await axios.get(
       `https://api.github.com/repos/${username}/${repoName}`
     );
-
-    return NextResponse.json({ success: true, repo: repo.data });
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "GitHub API error:",
-        error.response?.status,
-        error.response?.data || error.message
+    let packageJson = null;
+    try {
+      const packageRes = await axios.get(
+        `https://api.github.com/repos/${username}/${repoName}/contents/package.json?ref=${branch}`
       );
-      return NextResponse.json(
-        {
-          error: "GitHub API error",
-          details: error.response?.data || error.message,
-        },
-        { status: error.response?.status || 500 }
+      //decoding
+      packageJson = JSON.parse(
+        Buffer.from(packageRes.data.content, "base64").toString("utf-8")
       );
+    } catch {
+      packageJson = null;
     }
 
-    console.error("Unexpected error:", error);
-    return NextResponse.json({ error: "Unexpected error" }, { status: 500 });
+    return NextResponse.json({ success: true, repo: repo.data, packageJson });
+  } catch (error) {
+    console.error("GitHub API error", error);
   }
 }

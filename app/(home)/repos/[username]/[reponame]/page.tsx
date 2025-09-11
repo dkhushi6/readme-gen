@@ -6,12 +6,15 @@ import axios from "axios";
 import { Repo } from "@/lib/repo";
 import GetSpecificRepo from "@/components/repo/get-specific-repo";
 import { useSession } from "next-auth/react";
+import { PackageJson } from "@/lib/package-json";
 
 const RepoPage = () => {
   const params = useParams();
   const username = params?.username as string;
   const repoName = params?.reponame as string;
   const [repo, setRepo] = useState<Repo | null>(null);
+  const [packageJson, setPackageJson] = useState<PackageJson | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
@@ -39,6 +42,7 @@ const RepoPage = () => {
           );
           console.log(res.data);
           setRepo(res.data.repos);
+          setPackageJson(res.data.packageJson);
         } else {
           // Fetch public repo
           console.log("Fetching public repo...");
@@ -47,6 +51,7 @@ const RepoPage = () => {
             repoName,
           });
           setRepo(res.data.repo);
+          setPackageJson(res.data.packageJson);
         }
       } catch (err) {
         console.error(err);
@@ -64,7 +69,11 @@ const RepoPage = () => {
 
   return (
     <div className="px-6 py-8 max-w-4xl mx-auto space-y-6">
-      <GetSpecificRepo repo={repo} username={username} />
+      <GetSpecificRepo
+        repo={repo}
+        username={username}
+        packageJson={packageJson}
+      />
     </div>
   );
 };

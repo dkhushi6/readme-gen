@@ -31,7 +31,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  const { repoName, username } = await req.json();
+  const { repoName, username, branch = "main" } = await req.json();
 
   if (!repoName) {
     return NextResponse.json({ error: "repo name not found" });
@@ -49,24 +49,29 @@ export async function POST(req: NextRequest) {
   console.log("repoName after session", repoName);
   console.log("username", username);
 
-  try {
-    const repos = await axios.get(
-      `https://api.github.com/repos/${username}/${repoName}`,
-      {
-        headers: {
-          Authorization: `token ${session.user.accessToken}`,
-          Accept: "application/vnd.github.v3+json",
-        },
-      }
-    );
+  const repos = await axios.get(
+    `https://api.github.com/repos/${username}/${repoName}`,
+    {
+      headers: {
+        Authorization: `token ${session.user.accessToken}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    }
+  );
 
-    return NextResponse.json({ success: true, repos: repos.data });
-  } catch {
-    return NextResponse.json(
-      { error: "Error in fetching repos" },
-      { status: 500 }
+  let packageJson = null;
+  try {
+    const packageRes = await axios.get(
+      `https://api.github.com/repos/${username}/${repoName}/contents/package.json?ref=${branch}`
     );
+    //decoding
+    packageJson = JSON.parse(
+      Buffer.from(packageRes.data.content, "base64").toString("utf-8")
+    );
+  } catch {
+    packageJson = null;
   }
+  return NextResponse.json({ success: true, repos: repos.data, packageJson });
 }
 
 export async function PUT(req: NextRequest) {
