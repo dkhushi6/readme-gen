@@ -75,7 +75,7 @@ const ReadmeCard = ({ readme, username, repoName }: ReadmeCardProps) => {
           </Button>
         </div>
         {isPreview ? (
-          <div className="prose dark:prose-invert max-w-none text-sm">
+          <div className="markdown prose prose-sm dark:prose-invert">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
           </div>
         ) : (

@@ -11,9 +11,7 @@ const GithubPublicRepos = ({ username }: { username?: string }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
-  useEffect(() => {
-    console.log("session from client:", session);
-  }, [session]);
+
   useEffect(() => {
     const fetchRepos = async () => {
       try {
@@ -23,12 +21,10 @@ const GithubPublicRepos = ({ username }: { username?: string }) => {
               Authorization: `Bearer ${session.user.accessToken}`,
             },
           });
-          console.log("res from username", res.data);
 
           setRepos(res.data.repos);
         } else if (username) {
           const res = await axios.post("/api/public/all-repo", { username });
-          console.log("res from username", res.data);
           setRepos(res.data.repos);
         } else {
           setError("Username is required to fetch public repos");

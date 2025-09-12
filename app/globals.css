@@ -204,3 +204,20 @@ body {
     letter-spacing: var(--tracking-normal);
   }
 }
+
+/* globals.css or equivalent */
+.markdown h1 {
+  @apply text-3xl font-bold mt-4 mb-2;
+}
+
+.markdown h2 {
+  @apply text-2xl font-semibold mt-4 mb-2;
+}
+
+.markdown p {
+  @apply mb-2 leading-relaxed;
+}
+
+.markdown code {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100 px-1.5 py-0.5 rounded font-mono;
+}
