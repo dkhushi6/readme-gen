@@ -28,9 +28,7 @@ const RepoPage = () => {
       }
 
       try {
-        console.log("repoName", repoName);
         if (session?.user?.accessToken && session.user.username === username) {
-          console.log("Fetching private repo...");
           const res = await axios.post(
             "/api/private/all-repo",
             { repoName, username },
@@ -40,12 +38,10 @@ const RepoPage = () => {
               },
             }
           );
-          console.log(res.data);
           setRepo(res.data.repos);
           setPackageJson(res.data.packageJson);
         } else {
           // Fetch public repo
-          console.log("Fetching public repo...");
           const res = await axios.post("/api/public/single-repo", {
             username,
             repoName,

@@ -14,10 +14,8 @@ export async function POST(req: NextRequest) {
   let fullText = "";
 
   for await (const textPart of textStream) {
-    console.log(textPart);
     fullText += textPart;
   }
-  console.log("readme", fullText);
 
   return NextResponse.json({
     message: "README created successfully",

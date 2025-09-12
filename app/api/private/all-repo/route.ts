@@ -40,14 +40,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "username not found" });
   }
 
-  console.log("repoName before session", repoName);
-
   if (!session?.user?.accessToken) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
-
-  console.log("repoName after session", repoName);
-  console.log("username", username);
 
   const repos = await axios.get(
     `https://api.github.com/repos/${username}/${repoName}`,
@@ -99,7 +94,6 @@ export async function PUT(req: NextRequest) {
       `https://api.github.com/repos/${username}/${repoName}/contents/README.md?ref=${branch}`,
       { headers: { Authorization: `token ${session.user.accessToken}` } }
     );
-    console.log(res.data);
     existingReadme = res.data.sha;
   } catch {
     return NextResponse.json(
